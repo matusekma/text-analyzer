@@ -1,1 +1,1 @@
-rootProject.name = "text-analyzer-auth"
+rootProject.name = "textanalyzerauth"

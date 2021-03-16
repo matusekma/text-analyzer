@@ -17,3 +17,6 @@ spring:
       ddl-auto: validate
     database: POSTGRESQL
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  servlet:
+    multipart:
+      max-file-size: 3MB

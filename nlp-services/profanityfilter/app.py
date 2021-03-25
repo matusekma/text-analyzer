@@ -1,5 +1,4 @@
 from flask import Flask, request
-from redis import Redis, RedisError
 from profanity_filter import ProfanityFilter
 
 pf = ProfanityFilter()

@@ -1,12 +1,10 @@
 from flask import Flask, json, jsonify, request
 
-import errors.error_handlers as error_handlers
 from errors.FileUploadError import FileUploadError
-from service.ASRService import ASRService
+from service.ASRService import ASRService, EN, DE
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-app.register_blueprint(error_handlers.blueprint)
 
 ALLOWED_EXTENSIONS = {'wav'}
 
@@ -16,13 +14,13 @@ asr_service = ASRService()
 @app.route("/asr/english", methods=["POST"])
 def speech_to_text_english():
     file = validate_and_get_file(request)
-    return asr_service.speech_to_text_english(file)
+    return asr_service.speech_to_text(file, EN)
 
 
 @app.route("/asr/german", methods=["POST"])
 def speech_to_text_german():
     file = validate_and_get_file(request)
-    return asr_service.speech_to_text_german(file)
+    return asr_service.speech_to_text(file, DE)
 
 
 def validate_and_get_file(req):

@@ -2,7 +2,10 @@ server:
   error:
     include-message: always
     include-binding-errors: always
+  port: 8181
 spring:
+  application:
+    name: auth
   datasource:
     url: ${JDBC_DATABASE_URL}
     username: ${JDBC_DATABASE_USERNAME}
@@ -20,3 +23,11 @@ spring:
   servlet:
     multipart:
       max-file-size: 3MB
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_URL}
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    preferIpAddress: true

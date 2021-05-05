@@ -1,10 +1,10 @@
-package hu.bme.aut.textanalyzerauth
+package hu.bme.aut.executor
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class TextAnalyzerAuthApplicationTests {
+class ExecutorApplicationTests {
 
 	@Test
 	fun contextLoads() {

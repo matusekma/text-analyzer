@@ -1,6 +1,14 @@
 server:
   port: 8080
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_URL}
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    preferIpAddress: true
+
 spring:
   application:
     name: gateway
@@ -12,6 +20,48 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
+  security:
+    oauth2:
+      client:
+        registration:
+          gateway:
+            provider: auth
+            client-id: gateway
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: openid,messages.read
+            client-name: gateway
+        provider:
+          auth:
+            authorization-uri: http://localhost:9000/oauth2/authorize
+            token-uri: ${AUTH_URL}/oauth2/token
+            user-info-uri: ${AUTH_URL}/userinfo
+            user-name-attribute: sub
+            jwk-set-uri: ${AUTH_URL}/oauth2/jwks
+            issuer-uri: ${AUTH_URL}
+#        provider:
+#          keycloak:
+#            token-uri: http://localhost:8080/auth/realms/master/protocol/openid-connect/token
+#            authorization-uri: http://localhost:8080/auth/realms/master/protocol/openid-connect/auth
+#            userinfo-uri: http://localhost:8080/auth/realms/master/protocol/openid-connect/userinfo
+#            user-name-attribute: preferred_username
+#        registration:
+#          keycloak-with-test-scope:
+#            provider: keycloak
+#            client-id: spring-with-test-scope
+#            client-secret: c6480137-1526-4c3e-aed3-295aabcb7609
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+#          keycloak-without-test-scope:
+#            provider: keycloak
+#            client-id: spring-without-test-scope
+#            client-secret: f6fc369d-49ce-4132-8282-5b5d413eba23
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+
+
+
 management:
   endpoints:
     web:
@@ -20,11 +70,3 @@ management:
   endpoint:
     gateway:
       enabled: true
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: ${EUREKA_SERVER_URL}
-  instance:
-    leaseRenewalIntervalInSeconds: 5
-    preferIpAddress: true

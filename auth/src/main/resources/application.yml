@@ -2,7 +2,7 @@ server:
   error:
     include-message: always
     include-binding-errors: always
-  port: 8181
+  port: 9000
 spring:
   application:
     name: auth
@@ -17,7 +17,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     database: POSTGRESQL
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   servlet:
@@ -28,6 +28,21 @@ eureka:
   client:
     serviceUrl:
       defaultZone: ${EUREKA_SERVER_URL}
+    register-with-eureka: true
+    healthcheck:
+      enabled: true
   instance:
     leaseRenewalIntervalInSeconds: 5
     preferIpAddress: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

@@ -2,25 +2,73 @@ version: '3.8'
 
 services:
 
+  registry:
+    build: registry
+    container_name: registry
+    ports:
+      - "8761:8761"
+    networks:
+      - analyzer_network
+
   gateway:
     build: gateway
+    container_name: gateway
+    expose:
+      - "8080"
     ports:
       - "8080:8080"
+    depends_on:
+      - auth
+      - registry
+    restart: on-failure
+    environment:
+      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
+      AUTH_URL: ${AUTH_URL}
     networks:
       - analyzer_network
   
   auth:
     build: auth
+    container_name: auth
     environment: 
       JDBC_DATABASE_URL: ${JDBC_DATABASE_URL}
       JDBC_DATABASE_USERNAME: ${JDBC_DATABASE_USERNAME}
       JDBC_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
+    healthcheck:
+      test: "curl --fail --silent localhost:9000/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    expose:
+      - "9000"
+    ports:
+      - "9000:9000"
     depends_on: 
+      - registry
       - postgres
       - text_analyzer_es
     networks:
       - analyzer_network
 
+  executor:
+    build: executor
+    container_name: executor
+    environment: 
+      JDBC_DATABASE_URL: ${JDBC_DATABASE_URL}
+      JDBC_DATABASE_USERNAME: ${JDBC_DATABASE_USERNAME}
+      JDBC_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
+      AUTH_URL: ${AUTH_URL}
+    depends_on: 
+      - auth
+      - registry
+      - postgres
+      - text_analyzer_es
+    networks:
+      - analyzer_network
+    
   asr:
     build: nlp-services/asr
     depends_on: 
@@ -41,7 +89,7 @@ services:
     image: postgres
     restart: always
     environment:
-      - POSTGRES_DB=textanalyzer
+      - POSTGRES_DB=${POSTGRES_DB_NAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - 5432:5432

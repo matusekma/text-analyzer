@@ -7,15 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @SpringBootApplication
-@RestController
-@RequestMapping("/login")
-class TextAnalyzerAuthApplication {
-
-    @GetMapping
-    fun hello(): String {
-        return "hello"
-    }
-}
+class TextAnalyzerAuthApplication
 
 fun main(args: Array<String>) {
     runApplication<TextAnalyzerAuthApplication>(*args)

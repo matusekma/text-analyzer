@@ -1,0 +1,214 @@
+openapi: 3.0.1
+info:
+  title: Text Analyzer
+  description: ''
+  termsOfService: http://swagger.io/terms/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://swagger.io/v2
+tags:
+- name: auth
+  description: Operations about authentication and authorization
+- name: pipeline
+  description: Operations about pipelines
+paths:
+  /pipelines:
+    post:
+      tags:
+      - pipeline
+      summary: Run a pipeline
+      operationId: runPipeline
+      requestBody:
+        description: Pet object that needs to be added to the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PipelineStartRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineResultResponse'
+        400:
+          description: Bad request
+          content: {}
+        404:
+          description: not found
+          content: {}
+        405:
+          description: Validation exception
+          content: {}
+      security:
+      - petstore_auth:
+        - executor.task
+      x-codegen-request-body-name: body
+components:
+  schemas:
+  
+    SingleJobStartRequest:
+        type: object
+        properties:
+          uploadId:
+            type: integer
+          job:
+            $ref: '#/components/schemas/SingleJobType'
+              
+    PipelineStartRequest:
+      type: object
+      properties:
+        uploadId:
+          type: integer
+        language:
+          $ref: '#/components/schemas/Language'
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobType'
+        
+    JobType:
+      type: string
+      enum:
+        - SENTIMENT_ANALYSIS
+        - POS_TAG
+        - KEYWORD_EXTRACTION
+        - NER
+        
+    SingleJobType:
+      type: string
+      enum:
+        - LANGUAGE_DETECTION
+        - PROFANITY_FILTER
+        - PUNCTUATION_RESTORATION
+
+    Language:
+      type: string
+      enum:
+        - ENG
+        - GER
+        
+    SingleJobResultResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        uploadId:
+          type: integer
+        result:
+          $ref: '#/components/schemas/SingleJobResult'
+            
+    PipelineResultResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        uploadId:
+          type: integer
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobResult'
+    
+    SingleJobResult:
+      type: object
+      properties:
+        name: 
+          $ref: '#/components/schemas/SingleJobType'
+        result:
+            oneOf:
+                - $ref: '#/components/schemas/ProfanityFilterResult'
+                - $ref: '#/components/schemas/LanguageDetectionResult'
+                - $ref: '#/components/schemas/PunctuationRestorationResult'
+                
+    JobResult:
+      type: object
+      properties:
+        name: 
+          $ref: '#/components/schemas/JobType'
+        result:
+            oneOf:
+                - $ref: '#/components/schemas/SentimentAnalysisResult'
+                - $ref: '#/components/schemas/PosTaggingResult'                
+                - $ref: '#/components/schemas/KeywordExtractionResult'
+                - $ref: '#/components/schemas/NERResult'
+    
+    SentimentAnalysisResult:
+      type: object
+      properties:
+        positive:
+          type: number
+        negative:
+          type: number
+        
+    KeywordExtractionResult:
+      type: object
+      properties:
+        keywords:
+          type: array
+          items: 
+            type: string
+        
+    PosTaggingResult:
+      type: object
+      properties:
+        taggedText:
+          type: string
+    
+    NERResult:
+      type: object
+      properties:
+        taggedText:
+          type: string
+    
+    ProfanityFilterResult:
+      type: object
+      properties:
+        filteredText:
+          type: string
+    
+    LanguageDetectionResult:
+      type: object
+      properties:
+        eng:
+          type: number
+        ger:
+          type: number
+        other:
+          type: number
+          
+    PunctuationRestorationResult:
+      type: object
+      properties:
+        restoredText:
+          type: string
+          
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        
+  securitySchemes:
+    textanalyzer_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://swagger.io/oauth/dialog
+          scopes:
+            executor.task: execute pipeline or task
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header

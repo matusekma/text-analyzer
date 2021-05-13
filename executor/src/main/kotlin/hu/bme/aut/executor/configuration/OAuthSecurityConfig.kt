@@ -13,7 +13,9 @@ class OAuthSecurityConfig {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.authorizeRequests() { authorize ->
-            authorize.antMatchers("/messages/**").hasAuthority("SCOPE_messages.read")
+            authorize
+                .antMatchers("/messages/**").hasAuthority("SCOPE_messages.read")
+                .antMatchers("/profanityfilter/**").hasAuthority("SCOPE_executor.task")
                 .anyRequest().authenticated()
         }
             .oauth2ResourceServer().jwt()

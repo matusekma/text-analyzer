@@ -26,7 +26,16 @@ class GatewayConfig(
                             .removeRequestHeader("Cookie")
                     }
                     .uri("lb://executor:8081")
-            }.route("ping") { routeSpec ->
+            }.route("profanityfilter") { routeSpec ->
+                routeSpec.path("/executor/profanityfilter")
+                    .filters { f ->
+                        f.filters(filterFactory.apply())
+                            .removeRequestHeader("Cookie")
+                            .setPath("/profanityfilter")
+                    }
+                    .uri("lb://executor:8081")
+            }
+            .route("ping") { routeSpec ->
                 routeSpec.path("/ping/**")
                     .filters { f ->
                         f.filters(filterFactory.apply())

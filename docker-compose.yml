@@ -61,6 +61,7 @@ services:
       JDBC_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
       EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
       AUTH_URL: ${AUTH_URL}
+      PROFANITY_FILTER_URL: ${PROFANITY_FILTER_URL}
     depends_on: 
       - auth
       - registry
@@ -79,9 +80,13 @@ services:
 
   profanityfilter:
     build: nlp-services/profanityfilter
+    container_name: profanityfilter
     depends_on: 
       - auth
       - gateway
+      - executor
+    expose:
+      - "80"
     networks:
       - analyzer_network
 

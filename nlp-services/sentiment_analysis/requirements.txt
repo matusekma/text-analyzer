@@ -1,0 +1,4 @@
+Flask
+numpy
+spark-nlp==3.1.0
+pyspark==3.1.1

@@ -7,7 +7,6 @@ import hu.bme.aut.textanalyzerauth.common.Jwks
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.security.config.Customizer
@@ -19,14 +18,17 @@ import org.springframework.security.oauth2.core.oidc.OidcScopes
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
+import org.springframework.security.oauth2.server.authorization.config.ClientSettings
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings
 import org.springframework.security.web.SecurityFilterChain
-import java.util.UUID
+import java.util.*
 import java.util.function.Supplier
 
-
-@Configuration(proxyBeanMethods = false)
+@Configuration
 class AuthorizationServerConfig {
+
+    @Value("\${config.issuerUrl}")
+    lateinit var issuerUrl: String
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -38,18 +40,18 @@ class AuthorizationServerConfig {
     @Bean
     fun registeredClientRepository(): RegisteredClientRepository {
         val gatewayClient = RegisteredClient.withId(UUID.randomUUID().toString())
-            .clientId("gateway")
-            .clientSecret("secret")
-            .clientAuthenticationMethod(ClientAuthenticationMethod.BASIC)
-            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .redirectUri("http://localhost:8080/login/oauth2/code/gateway")
-            .redirectUri("http://localhost:8080/authorized")
-            .scope(OidcScopes.OPENID)
-            .scope("messages.read")
-            .scope("executor.task")
-            .clientSettings { clientSettings -> clientSettings.requireUserConsent(true) }
-            .build()
+                .clientId("gateway")
+                .clientSecret("secret")
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .redirectUri("http://localhost:8080/login/oauth2/code/gateway")
+                .redirectUri("http://localhost:8080/authorized")
+                .scope(OidcScopes.OPENID)
+                .scope("messages.read")
+                .scope("executor.task")
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                .build()
         /*val registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
             .clientId("executor")
             .clientSecret("secret")
@@ -82,5 +84,5 @@ class AuthorizationServerConfig {
     }
 
     @Bean
-    fun providerSettings(): ProviderSettings = ProviderSettings().issuer("http://auth:9000")
+    fun providerSettings(): ProviderSettings = ProviderSettings.builder().issuer(issuerUrl).build()
 }

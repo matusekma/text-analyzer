@@ -1,25 +1,22 @@
 package hu.bme.aut.executor.feature.labels.service
 
-import hu.bme.aut.executor.feature.labels.dto.CreateLabelRequest
-import hu.bme.aut.executor.feature.labels.dto.CreateLabelResponse
-import hu.bme.aut.executor.feature.labels.dto.LabelMapper
-import hu.bme.aut.executor.feature.labels.dto.LabelResponse
+import hu.bme.aut.executor.domain.Label
+import hu.bme.aut.executor.feature.labels.dto.*
 import hu.bme.aut.executor.repository.LabelRepository
 import org.springframework.stereotype.Service
 
 @Service
-class LabelServiceImpl(val labelRepository: LabelRepository) : LabelService {
+class LabelServiceImpl(private val labelRepository: LabelRepository) : LabelService {
 
     override fun getLabels(): List<LabelResponse> =
             labelRepository.findAll()
-                    .map(LabelMapper.Companion::toLabelResponse)
+                    .map(Label::toLabelResponse)
 
 
-    override fun createLabel(createLabelRequest: CreateLabelRequest): CreateLabelResponse {
-        val userId = 1L // TODO get userid
-        val label = LabelMapper.toLabel(userId, createLabelRequest)
+    override fun createLabel(userId: Long, createLabelRequest: CreateLabelRequest): CreateLabelResponse {
+        val label = createLabelRequest.toLabel(userId)
         return labelRepository.save(label)
-                .let(LabelMapper.Companion::toCreateLabelResponse)
+                .let(Label::toCreateLabelResponse)
     }
 
 }

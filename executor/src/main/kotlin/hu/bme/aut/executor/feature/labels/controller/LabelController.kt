@@ -9,9 +9,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class LabelController(private val labelService: LabelService) : LabelApi {
 
-    override fun getLabels(): List<LabelResponse> = labelService.getLabels()
+    override fun getLabels(): List<LabelResponse> =
+            labelService.getLabels()
 
-    override fun createLabel(createLabelRequest: CreateLabelRequest): CreateLabelResponse =
-            labelService.createLabel(createLabelRequest)
+    override fun createLabel(createLabelRequest: CreateLabelRequest): CreateLabelResponse {
+        val userId = 1L // TODO get user from request
+        return labelService.createLabel(userId, createLabelRequest)
+    }
+
 
 }

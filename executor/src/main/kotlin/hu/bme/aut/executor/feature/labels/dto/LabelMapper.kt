@@ -2,16 +2,11 @@ package hu.bme.aut.executor.feature.labels.dto
 
 import hu.bme.aut.executor.domain.Label
 
-class LabelMapper {
+fun CreateLabelRequest.toLabel(userId: Long) =
+        Label(userId = userId, name = name)
 
-    companion object {
-        fun toLabel(userId: Long, createLabelRequest: CreateLabelRequest) =
-                Label(userId = userId, name = createLabelRequest.name)
+fun Label.toCreateLabelResponse() =
+        CreateLabelResponse(id = id!!, userId = userId, name = name)
 
-        fun toCreateLabelResponse(label: Label) =
-                CreateLabelResponse(id = label.id!!, userId = label.userId, name = label.name)
-
-        fun toLabelResponse(label: Label) =
-                LabelResponse(id = label.id!!, userId = label.userId, name = label.name)
-    }
-}
+fun Label.toLabelResponse() =
+        LabelResponse(id = id!!, userId = userId, name = name)

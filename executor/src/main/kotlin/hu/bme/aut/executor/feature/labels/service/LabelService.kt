@@ -8,5 +8,6 @@ interface LabelService {
 
     fun getLabels(): List<LabelResponse>
 
-    fun createLabel(createLabelRequest: CreateLabelRequest): CreateLabelResponse
+    fun createLabel(userId: Long, createLabelRequest: CreateLabelRequest): CreateLabelResponse
+
 }

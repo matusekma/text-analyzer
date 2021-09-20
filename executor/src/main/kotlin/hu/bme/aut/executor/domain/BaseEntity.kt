@@ -6,8 +6,8 @@ import javax.persistence.Id
 import javax.persistence.MappedSuperclass
 
 @MappedSuperclass
-open class BaseEntity(
+abstract class BaseEntity(
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
-        val id: Long? = null
+        open var id: Long? = null
 )

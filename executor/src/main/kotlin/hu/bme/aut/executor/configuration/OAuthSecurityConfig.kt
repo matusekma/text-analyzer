@@ -18,6 +18,7 @@ class OAuthSecurityConfig {
             authorize
                 .antMatchers("/messages/**").hasAuthority("SCOPE_messages.read")
                 .antMatchers("/profanityfilter/**").hasAuthority("SCOPE_executor.task")
+                .antMatchers("/ping/**").hasAuthority("SCOPE_executor.task")
                 .anyRequest().authenticated()
         }
             .oauth2ResourceServer().jwt()

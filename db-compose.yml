@@ -3,13 +3,22 @@ version: '3.8'
 services:
 
   postgres:
-    image: postgres
+    image: postgres:13.4
     restart: always
     environment:
       - POSTGRES_DB=${POSTGRES_DB_NAME}
+      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - 5432:5432
+    networks:
+      - analyzer_network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8082:8080
     networks:
       - analyzer_network
 
@@ -28,7 +37,7 @@ services:
     volumes:
       - text_analyzer_es_data:/usr/share/elasticsearch/data
     ports:
-      - 9200:9200
+      - "9200:9200"
     networks:
       - analyzer_network
   

@@ -12,41 +12,49 @@ import org.springframework.beans.factory.annotation.Autowired
 @Configuration
 class GatewayConfig(
 
-    @Autowired
-    private val filterFactory: TokenRelayGatewayFilterFactory
+        @Autowired
+        private val filterFactory: TokenRelayGatewayFilterFactory
 ) {
 
     @Bean
     fun routeLocator(rb: RouteLocatorBuilder): RouteLocator =
-        rb.routes()
-            .route("messages") { routeSpec ->
-                routeSpec.path("/messages")
-                    .filters { f ->
-                        f.filters(filterFactory.apply())
-                            .removeRequestHeader("Cookie")
+            rb.routes()
+                    .route("messages") { routeSpec ->
+                        routeSpec.path("/messages")
+                                .filters { f ->
+                                    f.filters(filterFactory.apply())
+                                            .removeRequestHeader("Cookie")
+                                }
+                                .uri("http://localhost:8081")
                     }
-                    .uri("lb://executor:8081")
-            }
-            .route("profanityfilter") { routeSpec ->
-                routeSpec.path("/executor/profanityfilter")
-                    .filters { f ->
-                        f.filters(filterFactory.apply())
-                            .removeRequestHeader("Cookie")
-                            .setPath("/profanityfilter")
+                    .route("profanityfilter") { routeSpec ->
+                        routeSpec.path("/executor/profanityfilter")
+                                .filters { f ->
+                                    f.filters(filterFactory.apply())
+                                            .removeRequestHeader("Cookie")
+                                            .setPath("/profanityfilter")
+                                }
+                                .uri("http://localhost:8081")
                     }
-                    .uri("lb://executor:8081")
-            }
-            .route("ping") { routeSpec ->
-                routeSpec.path("/ping/**")
-                    .filters { f ->
-                        f.filters(filterFactory.apply())
-                            .removeRequestHeader("Cookie")
+                    .route("ping") { routeSpec ->
+                        routeSpec.path("/ping/**")
+                                .filters { f ->
+                                    f.filters(filterFactory.apply())
+                                            .removeRequestHeader("Cookie")
+                                }
+                                .uri("http://localhost:8081")
                     }
-                    .uri("lb://executor:8081")
-            }
-            .route("messages") { routeSpec ->
-                routeSpec.path("/register")
-                    .uri("lb://auth:9000")
-            }
-            .build()
+                    .route("register") { routeSpec ->
+                        routeSpec.path("/register")
+                                .filters { f ->
+                                    f.filters(filterFactory.apply())
+                                            .removeRequestHeader("Cookie")
+                                }
+                                .uri("http://localhost:9000")
+                    }
+                    .route("login") { routeSpec ->
+                        routeSpec.path("/login")
+                                .uri("http://localhost:9000")
+                    }
+                    .build()
 }

@@ -32,13 +32,28 @@ spring:
             redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope: openid,messages.read,executor.task
             client-name: gateway
+          gateway-authorization-code:
+            provider: auth
+            client-id: gateway
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri-template: "http://127.0.0.1:8080/authorized"
+            scope: messages.read,executor.task
+            client-name: gateway-authorization-code
+          gateway-client-credentials:
+            provider: auth
+            client-id: gateway
+            client-secret: secret
+            authorization-grant-type: client_credentials
+            scope: messages.read,executor.task
+            client-name: gateway-client-credentials
         provider:
           auth:
-            authorization-uri: http://localhost:9000/oauth2/authorize
-            token-uri: ${AUTH_URL}/oauth2/token
-            user-info-uri: ${AUTH_URL}/userinfo
-            user-name-attribute: sub
-            jwk-set-uri: ${AUTH_URL}/oauth2/jwks
+#            authorization-uri: http://localhost:9000/oauth2/authorize
+#            token-uri: ${AUTH_URL}/oauth2/token
+#            user-info-uri: ${AUTH_URL}/userinfo
+#            user-name-attribute: sub
+#            jwk-set-uri: ${AUTH_URL}/oauth2/jwks
             issuer-uri: ${AUTH_URL}
 #        provider:
 #          keycloak:
@@ -59,8 +74,6 @@ spring:
 #            client-secret: f6fc369d-49ce-4132-8282-5b5d413eba23
 #            authorization-grant-type: authorization_code
 #            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
-
-
 
 management:
   endpoints:

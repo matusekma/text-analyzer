@@ -14,19 +14,19 @@ import reactor.core.publisher.Mono
 @RestController
 class GatewayApplication {
 
-	@GetMapping(value = ["/token"])
-	fun getHome(@RegisteredOAuth2AuthorizedClient authorizedClient: OAuth2AuthorizedClient): Mono<String> {
-		return Mono.just(authorizedClient.accessToken.tokenValue)
-	}
+    @GetMapping(value = ["/token"])
+    fun getHome(@RegisteredOAuth2AuthorizedClient authorizedClient: OAuth2AuthorizedClient): Mono<String> {
+        return Mono.just(authorizedClient.accessToken.tokenValue)
+    }
 
-	@GetMapping("/")
-	fun index(session: WebSession): Mono<String> {
-		return Mono.just(session.id)
-	}
+    @GetMapping("/")
+    fun index(session: WebSession): Mono<String> {
+        return Mono.just(session.id)
+    }
 }
 
 fun main(args: Array<String>) {
-	runApplication<GatewayApplication>(*args)
+    runApplication<GatewayApplication>(*args)
 }
 
 /*@RestController

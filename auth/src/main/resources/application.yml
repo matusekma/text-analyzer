@@ -24,6 +24,9 @@ spring:
     multipart:
       max-file-size: 3MB
 
+config:
+  issuerUrl: http://localhost:9000
+
 eureka:
   client:
     serviceUrl:

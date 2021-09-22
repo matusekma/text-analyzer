@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration
@@ -38,13 +39,14 @@ class AuthorizationServerConfig {
     }
 
     @Bean
-    fun registeredClientRepository(): RegisteredClientRepository {
-        val gatewayClient = RegisteredClient.withId(UUID.randomUUID().toString())
+    fun registeredClientRepository(jdbcTemplate: JdbcTemplate): RegisteredClientRepository {
+        val registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("gateway")
                 .clientSecret("secret")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .redirectUri("http://localhost:8080/login/oauth2/code/gateway")
                 .redirectUri("http://localhost:8080/authorized")
                 .scope(OidcScopes.OPENID)
@@ -68,7 +70,7 @@ class AuthorizationServerConfig {
             .scope("message.write")
             .clientSettings { clientSettings -> clientSettings.requireUserConsent(true) }
             .build()*/
-        return InMemoryRegisteredClientRepository(gatewayClient)
+        return InMemoryRegisteredClientRepository(registeredClient)
     }
 
     @Bean

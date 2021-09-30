@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class RegistrationServiceImpl(
-    val passwordEncoder: PasswordEncoder,
-    val userRepository: UserRepository
+        val passwordEncoder: PasswordEncoder,
+        val userRepository: UserRepository
 ) : RegistrationService {
 
     override fun register(registrationRequest: RegistrationRequest): RegistrationResponse {
@@ -21,10 +21,10 @@ class RegistrationServiceImpl(
         checkUsernameExists(registrationRequest.username)
 
         val user = User(
-            username = registrationRequest.username,
-            email = registrationRequest.email,
-            password = passwordEncoder.encode(registrationRequest.password),
-            role = Role.USER
+                username = registrationRequest.username,
+                email = registrationRequest.email,
+                password = passwordEncoder.encode(registrationRequest.password),
+                role = Role.USER
         )
 
         return userRepository.save(user).toRegistrationResponse()

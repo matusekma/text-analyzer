@@ -24,9 +24,6 @@ spring:
     multipart:
       max-file-size: 3MB
 
-config:
-  issuerUrl: http://localhost:9000
-
 eureka:
   client:
     serviceUrl:
@@ -49,3 +46,7 @@ management:
     web:
       exposure:
         include: "*"
+
+jwt:
+  secret: 16jZfHALbOhKAzBEKvZO6rVnz7etTLX3af5uAHgLPVI= #${JWT_SECRET}
+  accessTokenCookieName: accessToken

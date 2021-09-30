@@ -17,6 +17,35 @@ tags:
   - name: uploads
     description: Operations about uploads
 paths:
+  /login:
+    post:
+      tags:
+        - auth
+      summary: Login
+      operationId: login
+      requestBody:
+        description: Login to the app
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        400:
+          description: Bad request
+          content: {}
+        404:
+          description: not found
+          content: {}
+        405:
+          description: Validation exception
+          content: {}
   /uploads:
     post:
       tags:
@@ -49,7 +78,6 @@ paths:
       security:
         - textanalyzer_auth:
             - executor.task
-      x-codegen-request-body-name: body
   /pipelines:
     post:
       tags:
@@ -82,9 +110,71 @@ paths:
       security:
         - textanalyzer_auth:
             - executor.task
-      x-codegen-request-body-name: body
+      
 components:
   schemas:
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+    
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserResponse'
+    
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: number  
+        username:
+          type: string
+        email:
+          type: string
+        role:
+          $ref: '#/components/schemas/Role'
+  
+    Role:
+      type: string
+      enum:
+        - USER
+      
+    RegistrationRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - email
+        - password
+  
+    RegistrationResponse:
+      type: object
+      properties:
+        id:
+          type: number
+        username:
+          type: string
+        email:
+          type: string
+        
+  
     UploadTextRequest:
       type: object
       properties:

@@ -9,4 +9,8 @@ interface LabelRepository : CrudRepository<Label, Long> {
 
     fun findAllByIdIn(ids: List<Long>): List<Label>
 
+    fun findAllByUserId(userId: Long): List<Label>
+
+    fun findByName(name: String): Label?
+
 }

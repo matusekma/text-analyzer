@@ -5,22 +5,32 @@ import javax.persistence.*
 @Entity
 @Table(name = "uploads")
 class Upload(
-        id: Long? = null,
+    id: Long? = null,
 
-        var name: String,
+    var name: String,
 
-        var description: String,
+    var description: String,
 
-        var text: String,
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    var text: String,
 
-        var userId: Long,
+    var userId: Long,
 
-        @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE, CascadeType.PERSIST])
-        @JoinTable(
-                name = "uploads_labels",
-                joinColumns = [JoinColumn(name = "upload_id")],
-                inverseJoinColumns = [JoinColumn(name = "label_id")])
-        var labels: MutableList<Label> = mutableListOf()
+    @OneToMany(
+        mappedBy = "upload",
+        cascade = [CascadeType.MERGE, CascadeType.PERSIST],
+        fetch = FetchType.LAZY
+    )
+    var pipelines: MutableList<Pipeline> = mutableListOf(),
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE, CascadeType.PERSIST])
+    @JoinTable(
+        name = "uploads_labels",
+        joinColumns = [JoinColumn(name = "upload_id")],
+        inverseJoinColumns = [JoinColumn(name = "label_id")]
+    )
+    var labels: MutableList<Label> = mutableListOf()
 
 ) : BaseEntity(id) {
 
@@ -37,6 +47,20 @@ class Upload(
     fun removeLabel(label: Label) {
         labels.remove(label)
         label.uploads.remove(this)
+    }
+
+    fun removeAllLabels() {
+        for (label: Label in labels) {
+            label.uploads.remove(this)
+        }
+        labels.clear()
+    }
+
+    fun removeAllPipelines() {
+        for (pipeline: Pipeline in pipelines) {
+            pipeline.upload = null
+        }
+        pipelines.clear()
     }
 
     override fun equals(other: Any?): Boolean {

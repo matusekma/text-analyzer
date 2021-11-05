@@ -131,3 +131,9 @@ dmypy.json
 *.pbmm
 *.scorer
 .vscode
+
+cache_pretrained
+.javacpp
+.ivy2
+nltk_data
+models

@@ -70,4 +70,16 @@ application:
   services:
     profanityFilter:
       url: ${PROFANITY_FILTER_URL}
+    languageDetection:
+      url: ${LANGUAGE_DETECTION_URL}
+    punctuationRestoration:
+      url: ${PUNCTUATION_RESTORATION_URL}
+    sentimentAnalysis:
+      url: ${SENTIMENT_ANALYSIS_URL}
+    keywordExtraction:
+      url: ${KEYWORD_EXTRACTION_URL}
+    posTagging:
+      url: ${POS_TAGGING_URL}
+    NER:
+      url: ${NER_URL}
 

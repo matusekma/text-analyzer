@@ -8,7 +8,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-  - url: https://swagger.io/v2
+  - url: http://localhost:8080
 tags:
   - name: auth
     description: Operations about authentication and authorization
@@ -17,6 +17,86 @@ tags:
   - name: uploads
     description: Operations about uploads
 paths:
+  /me:
+    get:
+      tags:
+        - auth
+      summary: Get current user
+      operationId: getCurrentUser
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+  /login:
+    post:
+      tags:
+        - auth
+      summary: Login
+      operationId: login
+      requestBody:
+        description: Login credentials
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        400:
+          description: Bad request
+          content: {}
+        404:
+          description: not found
+          content: {}
+        405:
+          description: Validation exception
+          content: {}
+  /logout:
+    post:
+      tags:
+        - auth
+      summary: Logout
+      operationId: logout
+      responses:
+        200:
+          description: OK
+  /register:
+    post:
+      tags:
+        - auth
+      summary: Register
+      operationId: register
+      requestBody:
+        description: Registration data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationResponse'
+        400:
+          description: Bad request
+          content: {}
+        404:
+          description: not found
+          content: {}
+        405:
+          description: Validation exception
+          content: {}
   /uploads:
     post:
       tags:
@@ -49,7 +129,6 @@ paths:
       security:
         - textanalyzer_auth:
             - executor.task
-      x-codegen-request-body-name: body
   /pipelines:
     post:
       tags:
@@ -82,9 +161,70 @@ paths:
       security:
         - textanalyzer_auth:
             - executor.task
-      x-codegen-request-body-name: body
 components:
   schemas:
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserResponse'
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: number
+        username:
+          type: string
+        email:
+          type: string
+        role:
+          $ref: '#/components/schemas/Role'
+
+    Role:
+      type: string
+      enum:
+        - USER
+
+    RegistrationRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - email
+        - password
+
+    RegistrationResponse:
+      type: object
+      properties:
+        id:
+          type: number
+        username:
+          type: string
+        email:
+          type: string
+
+
     UploadTextRequest:
       type: object
       properties:

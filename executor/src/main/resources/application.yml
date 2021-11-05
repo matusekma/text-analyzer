@@ -78,8 +78,6 @@ application:
       url: ${SENTIMENT_ANALYSIS_URL}
     keywordExtraction:
       url: ${KEYWORD_EXTRACTION_URL}
-    posTagging:
-      url: ${POS_TAGGING_URL}
-    NER:
-      url: ${NER_URL}
+    NERposTagging:
+      url: ${NER_POS_URL}
 

@@ -37,7 +37,7 @@ paths:
       summary: Login
       operationId: login
       requestBody:
-        description: Login credentials
+        description: Login credentials 
         content:
           application/json:
             schema:
@@ -161,6 +161,7 @@ paths:
       security:
         - textanalyzer_auth:
             - executor.task
+      
 components:
   schemas:
 
@@ -174,7 +175,7 @@ components:
       required:
         - email
         - password
-
+    
     LoginResponse:
       type: object
       properties:
@@ -182,24 +183,24 @@ components:
           type: string
         user:
           $ref: '#/components/schemas/UserResponse'
-
+    
     UserResponse:
       type: object
       properties:
         id:
-          type: number
+          type: number  
         username:
           type: string
         email:
           type: string
         role:
           $ref: '#/components/schemas/Role'
-
+  
     Role:
       type: string
       enum:
         - USER
-
+      
     RegistrationRequest:
       type: object
       properties:
@@ -213,7 +214,7 @@ components:
         - username
         - email
         - password
-
+  
     RegistrationResponse:
       type: object
       properties:
@@ -223,8 +224,8 @@ components:
           type: string
         email:
           type: string
-
-
+        
+  
     UploadTextRequest:
       type: object
       properties:

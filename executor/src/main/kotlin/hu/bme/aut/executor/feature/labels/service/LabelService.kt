@@ -6,7 +6,7 @@ import hu.bme.aut.executor.feature.labels.dto.LabelResponse
 
 interface LabelService {
 
-    fun getLabels(): List<LabelResponse>
+    fun getLabelsByUser(userId: Long): List<LabelResponse>
 
     fun createLabel(userId: Long, createLabelRequest: CreateLabelRequest): CreateLabelResponse
 

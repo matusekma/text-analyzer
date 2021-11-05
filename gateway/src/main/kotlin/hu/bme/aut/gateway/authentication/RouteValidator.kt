@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 @Component
 class RouterValidator {
 
-    val openApiEndpoints = listOf("/register", "/login")
+    val openApiEndpoints = listOf("/register", "/login", "/logout")
 
     fun isSecured(request: ServerHttpRequest): Boolean {
         return openApiEndpoints

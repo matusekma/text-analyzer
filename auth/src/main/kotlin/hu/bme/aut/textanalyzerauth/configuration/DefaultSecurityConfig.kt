@@ -32,10 +32,6 @@ class DefaultSecurityConfig(
                 .csrf { csrf -> csrf.disable() } //.ignoringAntMatchers("/api/admin/login")
                 .authorizeRequests { authorizeRequests ->
                     authorizeRequests.antMatchers("/login", "/register").permitAll()
-//                .antMatchers("/api/cases/*", "/api/cases/*/comments").hasAnyAuthority(Role.ASSISTANT.getValue(), Role.DOCTOR.getValue(), Role.PATIENT.getValue())
-//                .antMatchers("/api/registration-requests/**", "/api/admin/cases").hasAnyAuthority(Role.ASSISTANT.getValue(), Role.DOCTOR.getValue())
-//                .antMatchers("/api/assistants", "/api/cases/*/status").hasAuthority(Role.DOCTOR.getValue())
-//                .antMatchers("/api/children", "/api/children/*/cases", "/api/patient/cases", "/api/patient/cases/*/files").hasAuthority(Role.PATIENT.getValue())
                             .antMatchers("/api/**").authenticated()
                 }
                 .sessionManagement { sessionManagement ->

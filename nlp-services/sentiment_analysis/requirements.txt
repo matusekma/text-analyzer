@@ -1,4 +1,7 @@
 Flask
 numpy
-spark-nlp==3.1.0
-pyspark==3.1.1
+nltk
+spark-nlp==3.3.2
+pyspark==3.1.2
+transformers
+torch>=1.8.1

@@ -9,7 +9,7 @@ model = fasttext.load_model('models/lid.176.ftz')
 @app.route("/detect", methods=["POST"])
 def detect():
     result = model.predict(request.json['text'], k=2)
-    return {"language": result[0][0].replace('__label__', ''), "confidence": result[1][0]}
+    return {"languages": [r.replace('__label__', '') for r in result[0]], "confidences": result[1].tolist()}
 
 
 if __name__ == "__main__":

@@ -1,19 +1,34 @@
 package hu.bme.aut.executor.feature.uploads.controller
 
-import hu.bme.aut.executor.feature.uploads.dto.CreateUploadRequest
-import hu.bme.aut.executor.feature.uploads.dto.CreateUploadResponse
-import hu.bme.aut.executor.feature.uploads.dto.UploadResponse
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
+import hu.bme.aut.executor.feature.uploads.dto.*
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.*
+
 
 @RequestMapping("/uploads")
 interface UploadApi {
 
     @GetMapping
-    fun getUploadsByUser(): List<UploadResponse>
+    fun getUploadsByUser(@RequestHeader("userId") userId: Long,
+                         pageable: Pageable): Page<UploadResponse>
+
+    @GetMapping("/{uploadId}")
+    fun getUpload(@RequestHeader("userId") userId: Long,
+                  @PathVariable uploadId: Long): UploadDetailsResponse
 
     @PostMapping
-    fun createUpload(@RequestBody createUploadRequest: CreateUploadRequest): CreateUploadResponse
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createUpload(@RequestHeader("userId") userId: Long,
+                     @RequestBody createUploadRequest: CreateUploadRequest): CreateUploadResponse
+
+    @PutMapping("/{uploadId}")
+    fun editUpload(@RequestHeader("userId") userId: Long,
+                   @PathVariable uploadId: Long,
+                   @RequestBody editUploadRequest: EditUploadRequest): EditUploadResponse
+
+    @DeleteMapping("/{uploadId}")
+    fun deleteUpload(@RequestHeader("userId") userId: Long,
+                     @PathVariable uploadId: Long)
 }

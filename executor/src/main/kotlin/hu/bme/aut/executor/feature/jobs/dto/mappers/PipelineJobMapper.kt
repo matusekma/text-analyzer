@@ -1,9 +1,12 @@
 package hu.bme.aut.executor.feature.jobs.dto.mappers
 
+import hu.bme.aut.executor.feature.jobs.dto.pipelinejobs.SummarizerJobResult
 import hu.bme.aut.executor.feature.jobs.dto.pipelinejobs.*
-import hu.bme.aut.executor.feature.nerpos.dto.NERResponse
-import hu.bme.aut.executor.feature.nerpos.dto.PosTaggingResponse
-import hu.bme.aut.executor.feature.sentimentanalysis.dto.SentimentAnalysisResponse
+import hu.bme.aut.executor.feature.nlp.keywordextraction.dto.KeywordExtractionResponse
+import hu.bme.aut.executor.feature.nlp.nerpos.dto.NERResponse
+import hu.bme.aut.executor.feature.nlp.nerpos.dto.PosTaggingResponse
+import hu.bme.aut.executor.feature.nlp.sentimentanalysis.dto.SentimentAnalysisResponse
+import hu.bme.aut.executor.feature.nlp.summarizer.dto.SummarizerResponse
 
 fun SentimentAnalysisResponse.toSentimentAnalysisJobResult() =
     SentimentAnalysisJobResult(results = responses.map {
@@ -28,5 +31,16 @@ fun NERResponse.toNERJobResult() =
         NERResultEntity(
             text = it.text,
             label = it.label
+        )
+    })
+
+fun SummarizerResponse.toSummarizerJobResult() =
+    SummarizerJobResult(results = results)
+
+fun KeywordExtractionResponse.toKeywordExtractionJobResult() =
+    KeywordExtractionJobResult(results = results.map {
+        KeywordResultEntity(
+            keyword = it.keyword,
+            score = it.score
         )
     })

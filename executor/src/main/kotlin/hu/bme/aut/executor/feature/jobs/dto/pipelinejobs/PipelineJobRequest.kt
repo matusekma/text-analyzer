@@ -7,5 +7,6 @@ import hu.bme.aut.executor.domain.Upload
 class PipelineJobRequest(
         val upload: Upload,
         val language: Language,
-        val job: JobType
+        val job: JobType,
+        val options: Map<String, String>?
 )

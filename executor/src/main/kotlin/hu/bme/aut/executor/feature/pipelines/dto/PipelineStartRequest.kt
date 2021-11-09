@@ -13,5 +13,6 @@ class PipelineStartRequest(
         @NotNull
         val language: Language,
         @NotNull
-        val jobs: List<JobType>
+        val jobs: List<JobType>,
+        val options: Map<JobType, Map<String, String>>?
 )

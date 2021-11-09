@@ -2,6 +2,6 @@ package hu.bme.aut.executor.feature.jobs.dto.pipelinejobs
 
 import hu.bme.aut.executor.domain.JobType
 
-class KeywordExtractionResult(
-        val keywords: List<String>
+class KeywordExtractionJobResult(
+        val results: List<KeywordResultEntity>,
 ) : PipelineJobResult(type = JobType.KEYWORD_EXTRACTION)

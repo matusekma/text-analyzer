@@ -131,6 +131,7 @@ dmypy.json
 *.pbmm
 *.scorer
 .vscode
+*.pcl
 
 cache_pretrained
 .javacpp

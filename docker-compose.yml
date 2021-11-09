@@ -2,6 +2,13 @@ version: '3.8'
 
 services:
 
+  frontend:
+    build: ../text-analyzer-frontend
+    ports:
+      - 3000:3000
+    environment:
+      REACT_APP_API_URL: ${FRONTEND_API}
+
   registry:
     build: registry
     container_name: registry
@@ -24,6 +31,7 @@ services:
     environment:
       EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
       AUTH_URL: ${AUTH_URL}
+      EXECUTOR_URL: ${EXECUTOR_URL}
     networks:
       - analyzer_network
   
@@ -32,7 +40,7 @@ services:
     container_name: auth
     environment: 
       JDBC_DATABASE_URL: ${JDBC_DATABASE_URL}
-      JDBC_DATABASE_USERNAME: ${JDBC_DATABASE_USERNAME}
+      JDBC_DATABASE_USERNAME: ${POSTGRES_USER}
       JDBC_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
       EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
     healthcheck:
@@ -43,12 +51,10 @@ services:
       start_period: 40s
     expose:
       - "9000"
-    ports:
-      - "9000:9000"
     depends_on: 
       - registry
       - postgres
-      - text_analyzer_es
+      #- text_analyzer_es
     networks:
       - analyzer_network
 
@@ -57,26 +63,24 @@ services:
     container_name: executor
     environment: 
       JDBC_DATABASE_URL: ${JDBC_DATABASE_URL}
-      JDBC_DATABASE_USERNAME: ${JDBC_DATABASE_USERNAME}
+      JDBC_DATABASE_USERNAME: ${POSTGRES_USER}
       JDBC_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
       EUREKA_SERVER_URL: ${EUREKA_SERVER_URL}
       AUTH_URL: ${AUTH_URL}
       PROFANITY_FILTER_URL: ${PROFANITY_FILTER_URL}
+      LANGUAGE_DETECTION_URL: ${LANGUAGE_DETECTION_URL}
+      SENTIMENT_ANALYSIS_URL: ${SENTIMENT_ANALYSIS_URL}
+      SENTIMENT_ANALYSIS_URL: ${SENTIMENT_ANALYSIS_URL}
+      NER_POS_URL: ${NER_POS_URL}
+      ASR_URL: ${ASR_URL}
+      SUMMARIZER_URL: ${SUMMARIZER_URL}
+      KEYWORD_EXTRACTION_URL: ${KEYWORD_EXTRACTION_URL}
+      PUNCTUATION_RESTORATION_URL: ${PUNCTUATION_RESTORATION_URL}
     depends_on: 
       - auth
       - registry
       - postgres
-      - text_analyzer_es
-    networks:
-      - analyzer_network
-    
-  asr:
-    build: nlp-services/asr
-    depends_on: 
-      - auth
-      - gateway
-    ports:
-      - "1000:80"
+      #- text_analyzer_es
     networks:
       - analyzer_network
 
@@ -92,8 +96,93 @@ services:
     networks:
       - analyzer_network
 
+  sentiment_analysis:
+    build: nlp-services/sentiment_analysis
+    container_name: sentiment_analysis
+    depends_on: 
+      - auth
+      - gateway
+      - executor
+    expose:
+      - "81"
+    networks:
+      - analyzer_network
+
+  language_detection:
+    build: nlp-services/language_detection
+    container_name: language_detection
+    depends_on: 
+      - auth
+      - gateway
+      - executor
+    expose:
+      - "82"
+    networks:
+      - analyzer_network
+
+  ner_pos:
+    build: nlp-services/ner_pos
+    container_name: ner_pos
+    depends_on: 
+      - auth
+      - gateway
+      - executor
+    expose:
+      - "83"
+    networks:
+      - analyzer_network
+
+  asr:
+    build: nlp-services/asr
+    container_name: asr
+    depends_on: 
+      - auth
+      - gateway
+      - executor
+    expose:
+      - "84"
+    networks:
+      - analyzer_network
+
+  summarizer:
+    build: nlp-services/summarizer
+    container_name: summarizer
+    depends_on: 
+      - auth
+      - gateway
+      - executor
+    expose:
+      - "85"
+    networks:
+      - analyzer_network
+
+  punctuation_restoration:
+    build: nlp-services/punctuation_restoration
+    container_name: punctuation_restoration
+    depends_on: 
+      - auth
+      - gateway
+      - executor
+    expose:
+      - "86"
+    networks:
+      - analyzer_network
+      
+  keyword_extraction:
+    build: nlp-services/keyword_extraction
+    container_name: keyword_extraction
+    depends_on: 
+      - auth
+      - gateway
+      - executor
+    expose:
+      - "87"
+    networks:
+      - analyzer_network
+
   postgres:
-    image: postgres
+    image: postgres:13.4
+    container_name: postgres
     restart: always
     environment:
       - POSTGRES_DB=${POSTGRES_DB_NAME}
@@ -104,36 +193,36 @@ services:
     networks:
       - analyzer_network
 
-  text_analyzer_es:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
-    container_name: text_analyzer_es
-    environment:
-      - cluster.name=text-analyzer-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - discovery.type=single-node
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - text_analyzer_es_data:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-    networks:
-      - analyzer_network
+  # text_analyzer_es:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+  #   container_name: text_analyzer_es
+  #   environment:
+  #     - cluster.name=text-analyzer-cluster
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #     - discovery.type=single-node
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - text_analyzer_es_data:/usr/share/elasticsearch/data
+  #   ports:
+  #     - 9200:9200
+  #   networks:
+  #     - analyzer_network
   
-  text_analyzer_kibana:
-    image: docker.elastic.co/kibana/kibana-oss:7.10.2
-    container_name: text_analyzer_kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=http://text_analyzer_es:9200
-    depends_on:
-      - text_analyzer_es
-    ports:
-      - 5601:5601
-    networks:
-      - analyzer_network
+  # text_analyzer_kibana:
+  #   image: docker.elastic.co/kibana/kibana-oss:7.10.2
+  #   container_name: text_analyzer_kibana
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://text_analyzer_es:9200
+  #   depends_on:
+  #     - text_analyzer_es
+  #   ports:
+  #     - 5601:5601
+  #   networks:
+  #     - analyzer_network
 
 volumes:
   text_analyzer_es_data:

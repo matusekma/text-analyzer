@@ -6,8 +6,8 @@ import numpy as np
 model_en = deepspeech.Model('models/deepspeech-0.9.3-models.pbmm')
 model_en.enableExternalScorer('models/deepspeech-0.9.3-models.scorer')
 
-model_de = deepspeech.Model('models/model_de.pbmm')
-model_de.enableExternalScorer('models/scorer_de.scorer')
+model_de = deepspeech.Model('models/output_graph_de.pbmm')
+model_de.enableExternalScorer('models/kenlm_de.scorer')
 
 DE = 'de'
 EN = 'en'

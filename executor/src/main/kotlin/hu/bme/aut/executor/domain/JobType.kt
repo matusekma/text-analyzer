@@ -4,5 +4,6 @@ enum class JobType {
     SENTIMENT_ANALYSIS,
     POS_TAG,
     KEYWORD_EXTRACTION,
-    NER
+    NER,
+    SUMMARIZATION
 }

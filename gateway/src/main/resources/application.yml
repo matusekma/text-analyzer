@@ -44,6 +44,11 @@ management:
     gateway:
       enabled: true
 
+services:
+  auth:
+    url: ${AUTH_URL}
+  executor:
+    url: ${EXECUTOR_URL}
 jwt:
   secret: 16jZfHALbOhKAzBEKvZO6rVnz7etTLX3af5uAHgLPVI= #${JWT_SECRET}
   accessTokenCookieName: accessToken

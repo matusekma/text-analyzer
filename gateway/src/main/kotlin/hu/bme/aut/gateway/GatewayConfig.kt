@@ -1,6 +1,7 @@
 package hu.bme.aut.gateway
 
 import hu.bme.aut.gateway.authentication.AuthenticationFilter
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.cloud.gateway.route.RouteLocator
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder
 import org.springframework.context.annotation.Bean
@@ -8,7 +9,13 @@ import org.springframework.context.annotation.Configuration
 
 
 @Configuration
-class GatewayConfig(private val authenticationFilter: AuthenticationFilter) {
+class GatewayConfig(
+    @Value("\${services.auth.url}")
+    private val authUrl: String,
+    @Value("\${services.executor.url}")
+    private val executorUrl: String,
+    private val authenticationFilter: AuthenticationFilter
+) {
 
     @Bean
     fun routeLocator(rb: RouteLocatorBuilder): RouteLocator =
@@ -16,54 +23,57 @@ class GatewayConfig(private val authenticationFilter: AuthenticationFilter) {
             .route("messages") { routeSpec ->
                 routeSpec.path("/messages")
                     .filters { f -> f.filter(authenticationFilter) }
-                    .uri("http://localhost:8081")
+                    .uri(executorUrl)
             }
             .route("uploads") { routeSpec ->
                 routeSpec.path("/uploads")
                     .filters { f -> f.filter(authenticationFilter) }
-                    .uri("http://localhost:8081")
+                    .uri(executorUrl)
 
             }
             .route("uploadsById") { routeSpec ->
                 routeSpec.path("/uploads/{id}")
                     .filters { f -> f.filter(authenticationFilter) }
-                    .uri("http://localhost:8081")
+                    .uri(executorUrl)
 
             }
             .route("labels") { routeSpec ->
                 routeSpec.path("/labels")
                     .filters { f -> f.filter(authenticationFilter) }
-                    .uri("http://localhost:8081")
+                    .uri(executorUrl)
 
             }
             .route("pipelines") { routeSpec ->
                 routeSpec.path("/pipelines")
                     .filters { f -> f.filter(authenticationFilter) }
-                    .uri("http://localhost:8081")
-
+                    .uri(executorUrl)
             }
             .route("jobs") { routeSpec ->
                 routeSpec.path("/jobs")
                     .filters { f -> f.filter(authenticationFilter) }
-                    .uri("http://localhost:8081")
-
+                    .uri(executorUrl)
+            }
+            .route("asr") { routeSpec ->
+                routeSpec.path("/asr")
+                    .filters { f -> f.filter(authenticationFilter) }
+                    .uri(executorUrl)
             }
             .route("register") { routeSpec ->
                 routeSpec.path("/register")
-                    .uri("http://localhost:9000")
+                    .uri(authUrl)
             }
             .route("login") { routeSpec ->
                 routeSpec.path("/login")
-                    .uri("http://localhost:9000")
+                    .uri(authUrl)
             }
             .route("logout") { routeSpec ->
                 routeSpec.path("/logout")
-                    .uri("http://localhost:9000")
+                    .uri(authUrl)
             }
             .route("me") { routeSpec ->
                 routeSpec.path("/me")
                     .filters { f -> f.filter(authenticationFilter) }
-                    .uri("http://localhost:9000")
+                    .uri(authUrl)
             }
             .build()
 }

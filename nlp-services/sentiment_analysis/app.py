@@ -1,18 +1,14 @@
-import sparknlp
 from flask import Flask, request
-from sparknlp.pretrained import PretrainedPipeline
 import nltk
 from nltk.tokenize import sent_tokenize
 from germansentiment import SentimentModel
 nltk.download('punkt')
 
-spark = sparknlp.start()
+from flair.models import TextClassifier
+from flair.data import Sentence
 
-print("Spark NLP version: {}".format(sparknlp.version()))
-print("Apache Spark version: {}".format(spark.version))
-
-pipeline_en = PretrainedPipeline('analyze_sentimentdl_glove_imdb', 'en')
-german_model = SentimentModel() #PretrainedPipeline('classifierdl_bert_sentiment_pipeline', 'de')
+english_model = TextClassifier.load('en-sentiment')
+german_model = SentimentModel()
 
 app = Flask(__name__)
 
@@ -41,17 +37,18 @@ def analyze_de():
 def analyze_english():
     responses = []
     sentences = sent_tokenize(request.json['text'], language='english')
-    for sentence in sentences:
-        result = pipeline_en.fullAnnotate(sentence)
-        result = result[0]["sentiment"][0]
-        sentiment = result.result
+    for s in sentences:
+        sentence = Sentence(s)
+        english_model.predict(sentence)
+        result = sentence.labels[0]
+        sentiment = result.value.lower()
         responses.append({
-            "sentence": sentence,
-            "sentiment": sentiment,
-            "confidence": result.metadata[sentiment]
+            "sentence": s,
+            "sentiment": sentiment_dict[sentiment] if sentiment in sentiment_dict else 'neu',
+            "confidence": result.score
         })
         
     return { "responses": responses }
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=81)

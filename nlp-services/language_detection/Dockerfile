@@ -5,5 +5,5 @@ RUN apt update
 RUN apt-get install -y gcc
 RUN apt-get install -y g++
 RUN pip install -r requirements.txt
-EXPOSE 80
+EXPOSE 82
 CMD ["python", "app.py"]

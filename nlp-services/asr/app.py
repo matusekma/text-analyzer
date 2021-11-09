@@ -14,13 +14,13 @@ asr_service = ASRService()
 @app.route("/asr/english", methods=["POST"])
 def speech_to_text_english():
     file = validate_and_get_file(request)
-    return asr_service.speech_to_text(file, EN)
+    return { "text": asr_service.speech_to_text(file, EN) }
 
 
 @app.route("/asr/german", methods=["POST"])
 def speech_to_text_german():
     file = validate_and_get_file(request)
-    return asr_service.speech_to_text(file, DE)
+    return { "text":  asr_service.speech_to_text(file, DE) }
 
 
 def validate_and_get_file(req):
@@ -51,4 +51,4 @@ def handle_file_upload_error(error):
     return response, 400
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=84)

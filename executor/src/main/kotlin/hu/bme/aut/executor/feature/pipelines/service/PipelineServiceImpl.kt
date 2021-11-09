@@ -59,15 +59,15 @@ class PipelineServiceImpl(
                 val pipelineJobRequest = PipelineJobRequest(
                     upload = upload,
                     language = pipelineStartRequest.language,
-                    job = it
+                    job = it,
+                    options = pipelineStartRequest.options?.get(it)
                 )
                 async { jobRunnerService.runPipelineJob(pipelineJobRequest) }
             }.mapIndexed { i, deferredResult ->
                 try {
                     deferredResult.await()
                 } catch (e: RuntimeException) {
-                    println(e.message)
-                    FailedPipelineJobResult(jobs[i], e.message!!)
+                    FailedPipelineJobResult(jobs[i], "Job failed!")
                 }
             }
         }

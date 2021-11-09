@@ -80,4 +80,8 @@ application:
       url: ${KEYWORD_EXTRACTION_URL}
     NERposTagging:
       url: ${NER_POS_URL}
+    asr:
+      url: ${ASR_URL}
+    summarizer:
+      url: ${SUMMARIZER_URL}
 

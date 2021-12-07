@@ -54,8 +54,8 @@ class PipelineServiceImpl(
         upload: Upload
     ): List<PipelineJobResult> {
         val jobs = pipelineStartRequest.jobs
-        return supervisorScope {  // this: CoroutineScope
-            jobs.map {
+        return supervisorScope {
+            pipelineStartRequest.jobs.map {
                 val pipelineJobRequest = PipelineJobRequest(
                     upload = upload,
                     language = pipelineStartRequest.language,

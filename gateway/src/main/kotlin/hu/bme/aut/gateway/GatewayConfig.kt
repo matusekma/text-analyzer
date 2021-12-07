@@ -20,11 +20,6 @@ class GatewayConfig(
     @Bean
     fun routeLocator(rb: RouteLocatorBuilder): RouteLocator =
         rb.routes()
-            .route("messages") { routeSpec ->
-                routeSpec.path("/messages")
-                    .filters { f -> f.filter(authenticationFilter) }
-                    .uri(executorUrl)
-            }
             .route("uploads") { routeSpec ->
                 routeSpec.path("/uploads")
                     .filters { f -> f.filter(authenticationFilter) }

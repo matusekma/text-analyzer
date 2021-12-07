@@ -14,49 +14,6 @@ services:
     networks:
       - analyzer_network
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8082:8080
-    networks:
-      - analyzer_network
-
-  text_analyzer_es:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
-    container_name: text_analyzer_es
-    environment:
-      - cluster.name=text-analyzer-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - discovery.type=single-node
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - text_analyzer_es_data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-    networks:
-      - analyzer_network
-  
-  text_analyzer_kibana:
-    image: docker.elastic.co/kibana/kibana-oss:7.10.2
-    container_name: text_analyzer_kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=http://text_analyzer_es:9200
-    depends_on:
-      - text_analyzer_es
-    ports:
-      - 5601:5601
-    networks:
-      - analyzer_network
-
-volumes:
-  text_analyzer_es_data:
-    driver: local
-
 networks:
   analyzer_network:
     driver: bridge

@@ -6,7 +6,7 @@ kw_extractor_de = yake.KeywordExtractor(lan="de")
 
 app = Flask(__name__)
 
-def keyword_tuples_to_keywords(tuples):
+def keyword_tuples_to_keywords_dict(tuples):
     return [{'keyword' : keyword, 'score': score} for (keyword, score) in tuples]
 
 @app.route("/extract/english", methods=["POST"])

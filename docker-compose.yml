@@ -78,7 +78,6 @@ services:
       - auth
       - registry
       - postgres
-      #- text_analyzer_es
     networks:
       - analyzer_network
 
